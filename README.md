@@ -18,3 +18,6 @@ java中的事件机制的参与者有3种角色：
 3.event listener：具体的进行监听的事件类，
 当有其对应的event object产生的时候，它就调用相应的方法，进行处理。
 
+
+对于链接：
+https://www.cnblogs.com/taobean/p/12364278.html
