@@ -1,7 +1,6 @@
-package org.example.event02;
+package org.example.event.event02;
 
 import java.util.EventListener;
-import java.util.EventObject;
 
 /**
  * @author Jdx

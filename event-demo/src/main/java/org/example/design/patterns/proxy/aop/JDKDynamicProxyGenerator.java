@@ -13,7 +13,7 @@ import java.util.Arrays;
  */
 public class JDKDynamicProxyGenerator {
 
-    public static Object generatorJDKProxy(IUserService targetPoint, final IAspect aspect) {
+    public static Object generatorJDKProxy(final IUserService targetPoint, final IAspect aspect) {
 
         return Proxy.newProxyInstance(targetPoint.getClass().getClassLoader(),
                 targetPoint.getClass().getInterfaces(), new InvocationHandler() {

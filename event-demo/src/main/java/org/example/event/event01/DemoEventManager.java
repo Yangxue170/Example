@@ -1,4 +1,4 @@
-package org.example.event01;
+package org.example.event.event01;
 
 import java.util.Collection;
 import java.util.HashSet;

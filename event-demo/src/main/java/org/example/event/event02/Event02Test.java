@@ -1,4 +1,4 @@
-package org.example.event02;
+package org.example.event.event02;
 
 /**
  * @author Jdx
