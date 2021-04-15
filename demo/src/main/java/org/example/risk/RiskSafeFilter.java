@@ -1,7 +1,6 @@
 package org.example.risk;
 
 import org.apache.logging.log4j.util.Strings;
-import org.example.http.RestTemplateLogInterceptor;
 import org.example.risk.safe.BaseChain;
 import org.example.risk.safe.ChainContext;
 import org.example.servlet.RepeatReadServletRequest;
@@ -26,7 +25,7 @@ import java.util.List;
 
 @WebFilter(filterName = "riskSafeFilter",urlPatterns = "/*")
 public class RiskSafeFilter implements Filter {
-    private static final Logger log = LoggerFactory.getLogger(RestTemplateLogInterceptor.class);
+    private static final Logger log = LoggerFactory.getLogger(RiskSafeFilter.class);
 
     private BaseChain chain;
     @Autowired
@@ -35,6 +34,7 @@ public class RiskSafeFilter implements Filter {
     @PostConstruct
     private void init() {
         chainList.sort(chainList.get(0));
+        //将过滤list转化为链，放到next参数上
         chain = BaseChain.loadChain(chainList);
     }
     @Override
