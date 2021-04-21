@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty scope="context" name="logPath" source="app.log-path"/>
+
+    <property name="LOG_PATH" value="${logPath}"/>
+    <property name="FILE_LOG_PATTERN"
+              value="%d{yyyy/MM/dd-HH:mm:ss:SSS} [%tid] [%sid][%pid] %X{sessionTokenId} [%thread] %-5level %logger- %msg%n"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <logger name="druid" level="DEBUG"/>
+    <logger name="com.alibaba.druid.filter.stat" level="INFO"/>
+    <logger name="ShardingSphere-SQL" level="WARN"/>
+
+    <!--    todo org.example.logback.MlsProviderFilter-->
+    <!--去除无关logger-->
+    <logger name="dubboProviderLogger" level="OFF"/>
+    <logger name="dubboConsumerLogger" level="OFF"/>
+
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder" charset="UTF-8">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+            </layout>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+    <springProfile name="local,dev,test,preview,prod">
+
+        <appender name="ACCESS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>DEBUG</level>
+            </filter>
+            <File>${LOG_PATH}/access.log</File>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>
+                    ${LOG_PATH}/access.%d{yyyyMMdd}.log
+                </FileNamePattern>
+                <maxHistory>15</maxHistory>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                    <Pattern>${FILE_LOG_PATTERN}</Pattern>
+                </layout>
+            </encoder>
+        </appender>
+
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}/app.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/app-%d{yyyy-MM-dd}.log</fileNamePattern>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+        <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>ERROR</level>
+            </filter>
+            <file>${LOG_PATH}/error.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/error-%d{yyyy-MM-dd}.log</fileNamePattern>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+        <appender name="SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}/sql.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/sql-%d{yyyy-MM-dd}.log</fileNamePattern>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+        <appender name="SLOW_SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}/sql-slow.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/sql-slow-%d{yyyy-MM-dd}.log</fileNamePattern>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+        <!-- 异步输出 -->
+        <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+            <!-- 是否阻塞，避免引起业务线程阻塞 -->
+            <neverBlock>true</neverBlock>
+            <!-- 不丢失日志.默认如果队列的80%已满(<discardingThreshold >20</discardingThreshold>),则会丢弃       TRACT、DEBUG、INFO级别的日志 -->
+            <discardingThreshold>0</discardingThreshold>
+            <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+            <queueSize>1024</queueSize>
+            <!-- 添加附加的appender,最多只能添加一个 -->
+            <appender-ref ref="FILE"/>
+        </appender>
+
+        <appender name="ASYNC_ACCESS_FILE" class="ch.qos.logback.classic.AsyncAppender">
+            <neverBlock>true</neverBlock>
+            <discardingThreshold>80</discardingThreshold>
+            <queueSize>1024</queueSize>
+            <appender-ref ref="ACCESS_FILE"/>
+        </appender>
+
+        <logger name="com.ke.iprd.log.filter.HttpRequestFilter" additivity="false" level="INFO">
+            <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="ASYNC_ACCESS_FILE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+            <springProfile name="local,dev,test,test2,autotest">
+                <appender-ref ref="CONSOLE"/>
+            </springProfile>
+        </logger>
+
+        <logger name="druid.sql.DataSource" level="DEBUG" additivity="false">
+            <appender-ref ref="SQL_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+            <springProfile name="dev,test,test2,autotest">
+                <appender-ref ref="CONSOLE"/>
+            </springProfile>
+        </logger>
+
+        <logger name="druid.sql.Connection" level="DEBUG" additivity="false">
+            <appender-ref ref="SQL_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="FILE"/>
+            <springProfile name="dev,test,test2,autotest">
+                <appender-ref ref="CONSOLE"/>
+            </springProfile>
+        </logger>
+
+        <logger name="druid.sql.ResultSet" level="DEBUG" additivity="false">
+            <appender-ref ref="SQL_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="FILE"/>
+            <springProfile name="dev,test,test2,autotest">
+                <appender-ref ref="CONSOLE"/>
+            </springProfile>
+        </logger>
+
+        <logger name="druid.sql.Statement" level="DEBUG" additivity="false">
+            <appender-ref ref="SQL_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="FILE"/>
+            <springProfile name="dev,test,test2,autotest">
+                <appender-ref ref="CONSOLE"/>
+            </springProfile>
+        </logger>
+        <logger name="com.alibaba.druid.filter.stat" level="INFO" additivity="false">
+            <appender-ref ref="SLOW_SQL_FILE"/>
+        </logger>
+        <root level="INFO">
+            <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+        </root>
+    </springProfile>
+</configuration>

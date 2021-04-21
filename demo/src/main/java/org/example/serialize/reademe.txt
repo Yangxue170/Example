@@ -1,0 +1,11 @@
+本文件夹主，要是针对，数据处理解决的，case：数据库默认值是1970-01-01，此默认数据不应该返回前端。
+springMvc是使用jackson做的json序列化工具。
+https://blog.csdn.net/a2282730/article/details/81004011
+
+1、需求：返回前端的JSON报文，对于null，String格式要返回""，Number格式需要返回0，array格式需要返回[]，boolean类型需要返回false。
+    Jackson依赖BeanPropertyWriter对象对每一个属性进行序列化和反序列化。
+    解决方案：
+        是使用自定义BeanSerializerModifier来影响序列化方式。
+
+
+　　方式2：设置MappingJackson2HttpMessageConverter 对应的SerializerFactory 的SerializerModifier

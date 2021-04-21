@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class DateResp implements Serializable {
 
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+//    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date  date;
 
     public Date getDate() {

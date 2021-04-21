@@ -17,9 +17,18 @@
             private Date time;
 
     问题2：后端的Date类型直接返回给前端是以时间戳形式返回的，如果想以指定的时间格式返回，需要做如何处理？
-
+    解决方案：
+    方式一： 在application.properties 属性文件中增加两个属性配置：
+            spring.jackson.time-zone=GMT+8
+            spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+    方式二：注解JsonFormat
+         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+         private Date time;
 
 2、如何控制接口输出字段都为时间戳：yml或properties文件，参数类型控制
     spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=true
 
-3、BeanSerializerModifier
+总结一下：
+    1》Convert解决的问题是类型间的转化，case-String转化为date
+    2》BeanSerializerModifier解决的是序列化数据，Jackson序列化方式，case-
+
