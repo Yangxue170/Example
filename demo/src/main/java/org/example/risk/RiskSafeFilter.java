@@ -1,6 +1,6 @@
 package org.example.risk;
 
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.example.risk.safe.BaseChain;
 import org.example.risk.safe.ChainContext;
 import org.example.servlet.RepeatReadServletRequest;
@@ -49,7 +49,7 @@ public class RiskSafeFilter implements Filter {
                 context.setRequest(request);
                 //执行职责链
                 chain.doChain(context);
-                if (Strings.isNotBlank(context.getReason())) {
+                if (StringUtils.isNotBlank(context.getReason())) {
                     log.info("已经拦截{}", context.getReason());
                     return;
                 }

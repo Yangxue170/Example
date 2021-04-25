@@ -14,6 +14,9 @@ import org.springframework.core.env.Environment;
  */
 public class MlsProviderFilter implements Filter, EnvironmentAware {
 
+    /**
+     * 方法的getLogger(String name)参数name对应logback.xml文件中的name属性<-logger name ="dubboProviderLogger"><-/logger>
+     */
     private static final Logger PROVIDER_LOGGER = LoggerFactory.getLogger("dubboProviderLogger");
 
     @Override

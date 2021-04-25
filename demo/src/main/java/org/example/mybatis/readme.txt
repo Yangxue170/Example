@@ -4,3 +4,12 @@
     参考：https://www.cnblogs.com/yadongliang/p/13439800.html
     方案一：添加拦截器org.example.mybatis.MybatisPlusConfig.mybatisPlusInterceptor
     方案二：数据源配置中显式添加分页插件 org.example.mybatis.PageSqlFactoryCon.sqlSessionFactory
+
+
+
+
+
+数据库敏感字段加密方案
+1.基于Sharding JDBC
+2.基于mybatis typeHandler
+3.纯手工加密解密
