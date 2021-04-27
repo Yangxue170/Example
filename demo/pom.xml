@@ -98,7 +98,7 @@
             <version>4.12</version>
             <scope>compile</scope>
         </dependency>
-        <!--    Kafka依赖-->
+        <!--    Kafka客户端依赖-->
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
