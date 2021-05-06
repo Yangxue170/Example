@@ -1,5 +1,5 @@
 简单来说，kafka就是一个消息中间件
-1、kafka与zk关系
+#### kafka与zk关系
     Kafka 使用 ZooKeeper 来保存与分区和代理相关的元数据，并选举出一个代理作为集群控制器。目前kafka团队想要消除zk的依赖。
     Kafka需要使用Zookeeper来管理元数据，比如记录topic、partitions（分区）以及replica（副本）的分配信息。
 
