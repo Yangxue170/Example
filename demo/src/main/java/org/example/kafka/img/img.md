@@ -33,7 +33,8 @@
 ####Kafka的日志目录结构
 ![img_8.png](img_8.png)
 
-
+#####消费组消费
+![img_9.png](img_9.png)
 
 
 

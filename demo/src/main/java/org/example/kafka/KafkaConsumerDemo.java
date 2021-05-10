@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.ProducerInterceptor;
 
 import java.util.Collections;
 import java.util.Properties;
@@ -19,6 +20,7 @@ public class KafkaConsumerDemo {
     private final Consumer<String, String> consumer;
 
     private KafkaConsumerDemo() {
+        //1、构造Properties对象
         Properties props = new Properties();
         //注意消费端需要配置成zk的地址，而生产端配置的是kafka的ip和端口。
         //服务器ip:端口号，集群用逗号分隔
@@ -30,9 +32,9 @@ public class KafkaConsumerDemo {
         props.put("session.timeout.ms", "30000");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        //构造consumer的client
+        //2、构造KafkaConsumer对象
         consumer = new KafkaConsumer<>(props);
-        //订阅topic
+        //3、订阅topic列表
         consumer.subscribe(Collections.singletonList("new-msg-test"));
     }
 

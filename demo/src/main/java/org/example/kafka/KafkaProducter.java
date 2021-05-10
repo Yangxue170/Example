@@ -17,7 +17,7 @@ public class KafkaProducter {
     public final static String TOPIC = "new-msg-test";
 
     private KafkaProducter(){
-        //1、获取配置参数
+        //1、构造Properties对象，获取配置参数
         Properties properties = new Properties();
         //此处配置的是kafka的端口
         properties.put("bootstrap.servers", "XXXX:9092");
@@ -31,7 +31,7 @@ public class KafkaProducter {
          * -1：这意味着producer在follower副本确认接收到数据后才算一次发送完成。
          */
         properties.put("request.required.acks","-1");
-        //构建producer client
+        //2、构造KafkaProducer对象 client
         producer = new KafkaProducer<>(properties);
     }
 
@@ -49,13 +49,16 @@ public class KafkaProducter {
             String data = "hello kafka message " + key;
             //时间戳
             long startTime = System.currentTimeMillis();
-            //组建ProducerRecord实例
+            //3、构造ProducerRecord对象
             ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC, key, data);
             //发送消息到Kafka broker,使用异步发送的回调函数支持，有问题之类的处理方式，会执行onCompletion()方法。
+            //4、发送消息
             producer.send(record, new DataCallback(startTime, data));
             System.out.println(data);
             messageNo++;
         }
+        //5、关闭producer
+        producer.close();
     }
     public static void main( String[] args ) {
         //生产消息
